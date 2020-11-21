@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import "../assets/css/landing.styles.css";
 import { Button, Input, Form } from "antd";
 import { SearchOutlined, ArrowUpOutlined } from '@ant-design/icons';
@@ -23,13 +23,14 @@ function Landing() {
           form={form}
           onFinish={handleSubmitWrapper}
         >
-          <Form.Item name='product_name' rules={[
-            { required: true, message: "Please select a valid product name!" },
-          ]}>
-            <Input placeholder="Product Name" prefix={<SearchOutlined />} />
+          <Form.Item
+            name='product_name' rules={[
+              { required: true, message: "Please select a valid product name!" },
+            ]}>
+            <Input autoComplete='off' placeholder="Product Name" prefix={<SearchOutlined />} />
           </Form.Item>
           <Form.Item name='city_name'>
-            <Input placeholder="City Name" prefix={<ArrowUpOutlined />} />
+            <Input autoComplete='off' placeholder="City Name" prefix={<ArrowUpOutlined />} />
           </Form.Item>
           <Form.Item>
             <Button type="primary"

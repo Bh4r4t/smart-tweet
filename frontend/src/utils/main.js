@@ -1,8 +1,22 @@
 
-export const handleSubmit = async (name, location) => {
-    await new Promise((res, rej) => {
-        setTimeout(() => { res(1) }, 2000);
-    })
 
-    return { error: false, message: 'something went wrong', data: { tweets: ['933354946111705097', '1330062304709373955'], keywords: ['alpha', 'helios', 'doing'] } };
+const SERVER_URL = process.env.REACT_APP_SERVER_URL;
+
+export const handleSubmit = async (name, location) => {
+    try {
+        await new Promise((res, rej) => {
+            setTimeout(() => { res(1) }, 2000);
+        })
+        let resp = await fetch(`${SERVER_URL}/?product_name=${name}&location=${location}`);
+        let data = await resp.json();
+        if (data.error === true) {
+            throw Error(data.message);
+        }
+        return data;
+    } catch (err) {
+        return {
+            error: true,
+            message: 'Something Went Wrong',
+        }
+    }
 }

@@ -83,10 +83,10 @@ function Results() {
           <Form.Item label='Name' name='product_name' rules={[
             { required: true, message: "Please select a valid product name!" },
           ]}>
-            <Input placeholder="Product Name" />
+            <Input autoComplete='off' placeholder="Product Name" />
           </Form.Item>
           <Form.Item label='Location' name='city_name'>
-            <Input placeholder="City Name" />
+            <Input autoComplete='off' placeholder="City Name" />
           </Form.Item>
           <Form.Item>
             <Button
@@ -132,7 +132,7 @@ function Results() {
               </>
               :
               <>
-                <Alert message="We find the following tweets very cool and you should consider re-tweeting them." type="info" />
+                <Alert message="We found the following tweets very cool and you should consider re-tweeting them." type="info" />
                 <br />
                 <div className='tweets-wrapper'>
 
