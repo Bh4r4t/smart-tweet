@@ -1,0 +1,28 @@
+.results-wrapper main {
+  width: 90%;
+  margin: auto;
+}
+
+.keywords-results {
+}
+
+.results-wrapper .heading {
+  font-weight: bold;
+  font-size: 30px;
+  margin-bottom: 15px;
+}
+
+.ant-tag {
+  width: fit-content;
+  font-size: 15px !important;
+  padding: 10px 18px !important;
+}
+
+.tweets-wrapper {
+  margin: auto;
+}
+
+
+.twitter-tweet{
+  margin: auto;
+}
