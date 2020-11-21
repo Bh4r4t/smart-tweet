@@ -28,9 +28,7 @@ function Landing() {
           ]}>
             <Input placeholder="Product Name" prefix={<SearchOutlined />} />
           </Form.Item>
-          <Form.Item name='city_name' rules={[
-            { required: true, message: "Please select a City!" },
-          ]}>
+          <Form.Item name='city_name'>
             <Input placeholder="City Name" prefix={<ArrowUpOutlined />} />
           </Form.Item>
           <Form.Item>

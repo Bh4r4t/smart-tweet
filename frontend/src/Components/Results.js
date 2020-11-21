@@ -22,8 +22,6 @@ function Results() {
   const location = useLocation();
   const history = useHistory();
   const [form] = Form.useForm();
-  const [city, setcity] = useState('');
-  const [prodName, setprodName] = useState('');
   const [validResults, setvalidResults] = useState(false);
   const [loading, setloading] = useState(false);
 
@@ -36,11 +34,14 @@ function Results() {
     let params = new URLSearchParams(data);
     let city = params.get("city") ?? "";
     let prodName = params.get("name") ?? "";
-    setcity(city);
-    setprodName(prodName);
-    if (city === "" || prodName === "") {
+
+    form.setFieldsValue({
+      'city_name': city,
+      'product_name': prodName
+    })
+    if (prodName === "") {
       message.error(
-        `Invalid city or product name`,
+        `Invalid product name`,
         4
       );
       setvalidResults(false);
@@ -74,19 +75,18 @@ function Results() {
       <br />
       <main>
         <Form
+          form={form}
           layout={md ? 'inline' : 'vertical'}
           className=''
           onFinish={handleSubmitWrapper}
         >
-          <Form.Item name='product_name' rules={[
+          <Form.Item label='Name' name='product_name' rules={[
             { required: true, message: "Please select a valid product name!" },
           ]}>
-            <Input placeholder="Product Name" value={prodName} onChange={e => setprodName(e.target.value)} />
+            <Input placeholder="Product Name" />
           </Form.Item>
-          <Form.Item name='city_name' rules={[
-            { required: true, message: "Please select a City!" },
-          ]}>
-            <Input placeholder="City Name" value={city} onChange={e => setcity(e.target.value)} />
+          <Form.Item label='Location' name='city_name'>
+            <Input placeholder="City Name" />
           </Form.Item>
           <Form.Item>
             <Button
