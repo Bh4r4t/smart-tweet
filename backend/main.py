@@ -3,8 +3,11 @@ import creds
 from flask import Flask
 from collections import Counter
 from text_process import process
+from flask_cors import CORS
+from flask import request
 
 app = Flask(__name__)
+cors = CORS(app, resources={r"*": {"origins": "*"}})
 
 class twitter_api:
     def __init__(self, creds):
@@ -99,6 +102,9 @@ class twitter_api:
         res_dict = {"id":[], "keywords":None}
         for tweet in tweets:
             process_res = process(tweet['text'])
+
+            if "error" in process_res.keys() or "warning" in process_res.keys():
+                continue
             # 1. tweet sentiment is positive
             if process_res['sentiment']['document']['label'] == "negative" : 
                 continue
@@ -123,14 +129,24 @@ class twitter_api:
 
 
 @app.route('/', methods=['GET'])
-def main(product_name, query, count):
+def main():
+    product_name = request.args.get('product_name')
+    print(product_name)
+    query = [] 
+    count=10
     twitter = twitter_api(creds)
     print("------- Api init done! ----------")
     res = twitter.search_tweets(product_name=product_name, query=query, cnt=count)
     print("--------- Scraping done! --------")
     res = twitter.process_tweets(res)
     print("-------- text processing done!--------")
-    return res
+    return {
+        'error': False,
+        'data': {
+            'keywords': res['keywords'][:5],
+            'tweets': res['id']
+        }
+    }
 
 if __name__ == '__main__':
     app.run()
