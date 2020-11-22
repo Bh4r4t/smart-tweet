@@ -16,7 +16,12 @@ def get_json(tweet):
                 "sentiment": True,
                 "limit": 5
             },
-            "sentiment":{}
+            "sentiment":{
+                "document": True
+            },
+            "emotion": {
+                "document": True
+            }
         }
     }
     data = json.dumps(data)
@@ -32,7 +37,7 @@ def pre_process(text):
     #remove @mentions
     text = re.sub(r"@([a-z]|[0-9]|[A-Z]|[_])*", '',text)
     #remove external URLs
-    text = re.sub(r'^https?:\/\/.*[\r\n]*', '', text, flags=re.MULTILINE)
+    text = re.sub(r'https?:\/\/.*[\r\n]*', '', text, flags=re.MULTILINE)
     return text
 
 def process(tweet):
