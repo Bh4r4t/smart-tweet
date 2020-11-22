@@ -1,10 +1,11 @@
-import { Button, Input, message, Typography, Grid, Form, Alert, Spin, Tag } from "antd";
+import { Button, Input, message, Typography, Grid, Form, Alert, Spin, Tag, Progress } from "antd";
 import React, { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import "../assets/css/results.styles.css";
 import { handleSubmit } from "../utils/main";
 import Head from "./Head";
 import { TwitterTweetEmbed } from 'react-twitter-embed';
+import { AutoInput } from "./Landing";
 
 
 function toTitleCase(str) {
@@ -17,7 +18,7 @@ function toTitleCase(str) {
 }
 
 
-function Results() {
+function Results({ cities, brands }) {
   const { md } = Grid.useBreakpoint();
   const location = useLocation();
   const history = useHistory();
@@ -69,6 +70,12 @@ function Results() {
     history.push(`/results/?city=${payload.city_name}&name=${payload.product_name}`);
   }
 
+  const onChangeHandler = (key, value) => {
+    let newObject = {};
+    newObject[key] = value;
+    form.setFieldsValue(newObject);
+  };
+
   return (
     <div className="results-wrapper">
       <Head />
@@ -83,10 +90,20 @@ function Results() {
           <Form.Item label='Name' name='product_name' rules={[
             { required: true, message: "Please select a valid product name!" },
           ]}>
-            <Input autoComplete='off' placeholder="Product Name" />
+            <AutoInput
+              cities={brands}
+              placeholder="Product Name"
+              classNme="product_name"
+              onChangeHandler={onChangeHandler}
+            />
           </Form.Item>
           <Form.Item label='Location' name='city_name'>
-            <Input autoComplete='off' placeholder="City Name" />
+            <AutoInput
+              cities={cities}
+              placeholder="City Name"
+              classNme="city_name"
+              onChangeHandler={onChangeHandler}
+            />
           </Form.Item>
           <Form.Item>
             <Button
@@ -99,6 +116,41 @@ function Results() {
         <br />
         <br />
         {validResults && (!loading) ? <>
+
+          <div className='sentiment-results'>
+            <div className='heading'>General Sentiments</div>
+            {!data || data['keywords'].length === 0 ?
+              <>
+                <Alert message='Sorry no data found' type='warning' />
+                <br />
+              </>
+              :
+              <>
+                <Alert message="Here is a summary of the general sentiments around the tweets we found for your brand" type="info" />
+                <br />
+
+                <div className='sentiment-results-wrapper'>
+
+
+                  {Object.keys(data['emotions']).map((e, index) => {
+                    let key = Math.floor(Math.random() * (colors.length));
+                    return (
+                      <div className='progress-wrapper' key={index}>
+                        <Progress strokeColor={colors[key]} type="circle" percent={(data['emotions'][e] * 100).toFixed(2)} width={80} />
+                        <div>{toTitleCase(e)}</div>
+                      </div>
+                    )
+                  })}
+                </div>
+
+              </>}
+
+          </div>
+          <br />
+          <br />
+
+
+
           <div className='keywords-results'>
             <div className='heading'>Keywords</div>
             {!data || data['keywords'].length === 0 ?
@@ -119,6 +171,31 @@ function Results() {
                 })}
               </>}
           </div>
+          <br />
+          <br />
+
+          <div className='keywords-results'>
+            <div className='heading'>Hashtags</div>
+            {!data || data['hashtags'].length === 0 ?
+              <>
+                <Alert message='Sorry no hashtags found' type='warning' />
+                <br />
+              </>
+              :
+              <>
+                <Alert message="These are some of the popular hashtags we strongly suggest you to use in your next tweet." type="info" />
+                <br />
+
+                {data['hashtags'].map((e, index) => {
+                  let key = Math.floor(Math.random() * (colors.length));
+                  return (
+                    <Tag key={index} color={colors[key]}>#{toTitleCase(e)}</Tag>
+                  )
+                })}
+              </>}
+          </div>
+
+
           <br />
 
           <br />

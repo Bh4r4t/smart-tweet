@@ -81,7 +81,6 @@ class twitter_api:
                         searched_tweets.append(res)
                 if tweets:
                     last_id = tweets[-1].id
-
             except tweepy.TweepError as e:
                 break
         
@@ -104,14 +103,17 @@ class twitter_api:
             cnt += 1
             if cnt%10==0:
                 print(cnt)
-            process_res = process(tweet['text'])
-
-            if "error" in process_res.keys() or "warning" in process_res.keys() or "sentiment" not in process_res.keys():
-                print("Got an error!")
-                continue
-            # 1. tweet sentiment is positive
-            if process_res['sentiment']['document']['label'] == "negative" : 
-                continue
+            
+            if tweet['retweet_count'] !=0 or tweet['favorite_count'] !=0:
+                process_res = tweet['text']
+            else:
+                process_res = process(tweet['text'])
+                if "error" in process_res.keys() or "warning" in process_res.keys() or "sentiment" not in process_res.keys():
+                    print("Got an error!")
+                    continue
+                # 1. tweet sentiment is positive
+                if process_res['sentiment']['document']['label'] == "negative" : 
+                    continue
 
             res_dict['id'].append(tweet['id'])
         tweet_corpus = []
@@ -160,7 +162,7 @@ def main():
             'message': 'Please enter a product name'
         }
     query = [] 
-    count=50
+    count=20
     try:
         twitter = twitter_api(creds)
         print("------- Api init done! ----------")
@@ -173,7 +175,8 @@ def main():
             'data': {
                 'keywords': res['keywords'][:6],
                 'hashtags': res['hashtags'][:6],
-                'tweets': res['id'][:6]
+                'tweets': res['id'][:6],
+                'emotions': res['emotions']
             }
         }
     except Exception as inst:

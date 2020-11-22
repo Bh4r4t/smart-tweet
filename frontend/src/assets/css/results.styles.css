@@ -3,8 +3,6 @@
   margin: auto;
 }
 
-.keywords-results {
-}
 
 .results-wrapper .heading {
   font-weight: bold;
@@ -25,4 +23,20 @@
 
 .twitter-tweet{
   margin: auto;
+}
+
+.sentiment-results-wrapper{
+  display: flex;
+  justify-content: space-around;
+}
+
+.progress-wrapper{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-items: center;
+}
+
+.ant-select-selector{
+  min-width: 150px !important;
 }
