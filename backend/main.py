@@ -2,9 +2,11 @@ import tweepy
 import creds
 from flask import Flask
 from collections import Counter
-from text_process import process
+from text_process import *
 from flask_cors import CORS
 from flask import request
+import re
+from sklearn.feature_extraction.text import TfidfVectorizer
 
 app = Flask(__name__)
 cors = CORS(app, resources={r"*": {"origins": "*"}})
@@ -87,7 +89,7 @@ class twitter_api:
 
         return searched_tweets
 
-
+    
     def process_tweets(self, tweets):
         """
         Filter scraped tweets on ApunKaScore
@@ -98,9 +100,14 @@ class twitter_api:
             res_dict : {"id", "keywords"}
         """
         # filter tweets
-        count = Counter()
+        # count = Counter()
+        print('len tweets: '+str(len(tweets)))
         res_dict = {"id":[], "keywords":None}
+        cnt = 0
         for tweet in tweets:
+            cnt += 1
+            if cnt%10==0:
+                print(cnt)
             process_res = process(tweet['text'])
 
             if "error" in process_res.keys() or "warning" in process_res.keys():
@@ -110,19 +117,27 @@ class twitter_api:
                 continue
 
             res_dict['id'].append(tweet['id'])
-            for keyword in process_res['keywords']:
-                if (keyword['relevance'] > 0.90) or (keyword['count']>1 and keyword['relevance']>0.80):
-                    count[keyword['text']]+=1
+            # for keyword in process_res['keywords']:
+            #     if (keyword['relevance'] > 0.90) or (keyword['count']>1 and keyword['relevance']>0.80):
+            #         count[keyword['text']]+=1
+        tweet_corpus = []
+        for tweet in tweets:
+            tweet_corpus.append(pre_process(tweet['text']))
+        vectorizer = TfidfVectorizer(ngram_range=(1,2))
+        X = vectorizer.fit_transform(tweet_corpus)
+        print(vectorizer.get_feature_names()[-10:])
+        impactfull_words = vectorizer.get_feature_names()[-10:]
+        # # combining all tweets' text into one text body
+        # all_text = " ".join(tweet['text'] for tweet in tweets)
+        # all_text_filtered = pre_process(all_text)
+        # process_text_res = process(all_text_filtered)
+        # if process_text_res['sentiment']['document']['label'] == "positive" :
+        #     for keyword in process_text_res['keywords']:
+        #         if keyword['relevance'] > 0.90:
+        #             count[keyword['text']]+=1
 
-        # combining all tweets' text into one text body
-        all_text = " ".join(tweet['text'] for tweet in tweets)
-        process_text_res = process(all_text)
-        if process_text_res['sentiment']['document']['label'] == "positive" :
-            for keyword in process_text_res['keywords']:
-                if keyword['relevance'] > 0.90:
-                    count[keyword['text']]+=1
-
-        impactfull_words = [words for (words, cnt) in count.most_common(25)]
+        # impactfull_words = [words for (words, cnt) in count.most_common(25)]
+        # print('len impactfull_words: '+str(len(impactfull_words)))
         res_dict['keywords'] = impactfull_words
         return res_dict
 
@@ -133,7 +148,7 @@ def main():
     product_name = request.args.get('product_name')
     print(product_name)
     query = [] 
-    count=10
+    count=50
     twitter = twitter_api(creds)
     print("------- Api init done! ----------")
     res = twitter.search_tweets(product_name=product_name, query=query, cnt=count)

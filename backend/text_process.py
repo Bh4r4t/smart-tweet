@@ -1,7 +1,7 @@
 import json
 import requests
 from requests.auth import HTTPBasicAuth
-
+import re
 
 def get_json(tweet):
     "Defines parameters for the watson API request"
@@ -22,6 +22,18 @@ def get_json(tweet):
     data = json.dumps(data)
     return data
 
+def pre_process(text):
+    """
+    Args: 
+        all tweets combined
+    Return:
+        tweets with @mentions and urls removed
+    """
+    #remove @mentions
+    text = re.sub(r"@([a-z]|[0-9]|[A-Z]|[_])*", '',text)
+    #remove external URLs
+    text = re.sub(r'^https?:\/\/.*[\r\n]*', '', text, flags=re.MULTILINE)
+    return text
 
 def process(tweet):
     """
