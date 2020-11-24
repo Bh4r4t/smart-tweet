@@ -70,7 +70,7 @@ export default Landing;
 
 const { Option } = AutoComplete;
 
-export const AutoInput = ({ cities, classNme, placeholder, onChangeHandler }) => {
+export const AutoInput = ({ cities, classNme, placeholder, onChangeHandler, initialVal }) => {
   const [result, setResult] = useState([]);
   const handleSearch = (value) => {
     let res = [];
@@ -90,6 +90,7 @@ export const AutoInput = ({ cities, classNme, placeholder, onChangeHandler }) =>
       placeholder={placeholder}
       className={classNme}
       style={{textAlign: 'left'}}
+      inputValue={initialVal??''}
     >
       {result.map((value) => (
         <Option key={value} value={value}>

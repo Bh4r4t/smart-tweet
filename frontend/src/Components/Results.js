@@ -91,6 +91,7 @@ function Results({ cities, brands }) {
             { required: true, message: "Please select a valid product name!" },
           ]}>
             <AutoInput
+              initialVal={form.getFieldValue('product_name')}
               cities={brands}
               placeholder="Product Name"
               classNme="product_name"
@@ -99,6 +100,7 @@ function Results({ cities, brands }) {
           </Form.Item>
           <Form.Item label='Location' name='city_name'>
             <AutoInput
+              initialVal={form.getFieldValue('city_name')}
               cities={cities}
               placeholder="City Name"
               classNme="city_name"
