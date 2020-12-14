@@ -1,0 +1,11 @@
+name: Heroku Awake
+on:
+  schedule:
+    - cron: "*/25 * * * *"
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: mikeesto/heroku-awake@1.0.0
+        with:
+          URL: "https://smart-tweet-api.herokuapp.com" 
